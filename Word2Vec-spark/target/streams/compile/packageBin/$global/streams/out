@@ -1,0 +1,23 @@
+[0m[[0m[0minfo[0m] [0m[0mPackaging /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/word2vec_2.11-0.0.1.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala/Main$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala/Main$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala/Main$$anonfun$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala/Main$$anonfun$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala/Main$$anonfun$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala/Main$$anonfun$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala/Main$$anonfun$main$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala/Main$$anonfun$main$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala/Main$$anonfun$main$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala/Main$$anonfun$main$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala/Main.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala/Main.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala/Main$$anonfun$2$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala/Main$$anonfun$2$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main[0m
+[0m[[0m[0mdebug[0m] [0m[0m	main/scala/Main$$anonfun$main$3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/rodolpho/Downloads/sparkWord2Vec-feature-readXML/Word2Vec-spark/target/scala-2.11/classes/main/scala/Main$$anonfun$main$3.class[0m
+[0m[[0m[0minfo[0m] [0m[0mDone packaging.[0m

@@ -13,12 +13,11 @@ import org.apache.spark.sql.functions.{explode, col}
 
 object Main {
     def main(args: Array[String]) {
-        if (args.length < 2) {
-            System.err.println("dir or file not pass")
+        if (args.length < 1) {
+            System.err.println("directory not pass")
             System.exit(1)
         }
         val dir = args(0)
-        val inputFileName = args(1)
         val conf = new SparkConf()
             .setAppName("Word2Vec")
         val sc = new SparkContext(conf)
@@ -29,7 +28,7 @@ object Main {
             StructField("text", StringType, nullable = true))
         )
         val textRegex = "[^A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+"
-        var stopwords = sc.textFile("hdfs://localhost:9000/usr/local/stopwords.txt")
+        var stopwords = sc.textFile(dir + "stopwords.txt")
             .flatMap(line => line.split(" "))
             .collect
             .toSet
@@ -37,7 +36,7 @@ object Main {
             .format("com.databricks.spark.xml")            
             .option("rowTag", "revision")
             .schema(revisionSchema)
-            .load(dir + "/" + inputFileName)
+            .load(dir + "ptwiktionary-latest-pages-articles.xml")
         val selectedData = df.select("text")
         var input = sc.parallelize(selectedData
             .collect
@@ -55,6 +54,6 @@ object Main {
         for((synonym, cosineSimilarity) <- synonyms) {
             println(s"$synonym $cosineSimilarity")
         }
-        model.save(sc, "models/word2vecModel")
+        model.save(sc, "word2vecModel")
     }
 }

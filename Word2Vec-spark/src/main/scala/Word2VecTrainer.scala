@@ -1,29 +1,39 @@
 package main.scala
 
+import java.net.URI;
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
-
 import java.nio.file.{ Files, FileSystems }
-
+import org.apache.hadoop.fs.{Path, FileSystem};
 import org.apache.spark.mllib.feature.{Word2Vec, Word2VecModel}
 
-class Word2VecTrainer(val sc: SparkContext, val modelPath: String) {
-    private val inputName = "../datasets/pt.stackoverflow.com/Comments.xml";
+class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName: String) {
     private val word2vec = new Word2Vec();
-    private val model = this.load(inputName, "row", "Text");
+    private val modelPath = workPath + modelName
+    private val model = this.load("row", "Text");
 
-    private def load(input: String, tag: String, attr: String): Word2VecModel = {
-        val defaultFS = FileSystems.getDefault();
-        val path = defaultFS.getPath(modelPath);
-        val reader = new XMLReader(sc, inputName);
-
-        if (Files.exists(path)) {
-            return Word2VecModel.load(sc, "file://" + modelPath);
+    private def load(tag: String, attr: String): Word2VecModel = {
+        var inputName = "Comments.xml"
+        var isModelExists = false
+        if (modelPath.contains("hdfs")) {
+            val conf = sc.hadoopConfiguration
+            val fs = FileSystem.get(URI.create(workPath), conf)
+            isModelExists = fs.exists(new Path(modelPath))
         } else {
-            var input = sc.parallelize(reader.read(tag, attr));
-            var model = word2vec.fit(input);
-            model.save(sc, "file://" + modelPath);
-            return model;
+            inputName = "pt.stackoverflow/" + inputName
+            val defaultFS = FileSystems.getDefault()
+            val path = defaultFS.getPath(modelPath)
+            isModelExists = Files.exists(path)
+        }
+
+        if (isModelExists) {
+            return Word2VecModel.load(sc, modelPath);
+        } else {
+            val reader = new XMLReader(sc, workPath, inputName)
+            var input = sc.parallelize(reader.read(tag, attr))
+            var model = word2vec.fit(input)
+            model.save(sc, modelPath)
+            return model
         }
     }
 

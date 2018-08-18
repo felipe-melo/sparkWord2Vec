@@ -9,14 +9,28 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
-import java.io.File;
+import java.io.{File, FileInputStream, InputStream};
+import java.net.URI;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.conf.Configuration;
 
-class XMLReader(val sc: SparkContext, val file: String) {
+class XMLReader(val sc: SparkContext, val workPath: String, val file: String) {
 
-    val stopwordsFile = "hdfs://localhost:9000/usr/local/stopwords.txt"
-    val textRegex = "[^A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+"    
-    
-    val fXmlFile = new File(file);
+    val stopwordsFile = workPath + "stopwords.txt"
+    val textRegex = "[^A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+"
+    val path = workPath + file
+
+    var fXmlFile: InputStream = null
+
+    if (workPath.contains("hdfs")) {
+        val fs = FileSystem.get(URI.create(workPath + file), new Configuration())
+        fXmlFile = fs.open(new Path(path))
+    } else {
+        println(path)
+        fXmlFile = new FileInputStream(new File(path))
+    }
+
     val dbFactory = DocumentBuilderFactory.newInstance();
     val dBuilder = dbFactory.newDocumentBuilder();
     val doc = dBuilder.parse(fXmlFile);

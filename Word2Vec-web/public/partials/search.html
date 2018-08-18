@@ -1,0 +1,38 @@
+<div class="row">
+	<div class="col-lg-8 container">
+		<div class="input-group">
+			<input type="text" ng-model="searchWord" class="form-control" aria-label="..." placeholder="Search for a word or combinarion like: movie + popcorn">
+		  	<span class="input-group-btn">
+	        	<button ng-click="search()" class="btn btn-default" type="button">Go!</button>
+	      	</span>
+		</div><!-- /input-group -->
+	</div><!-- /.col-lg-8 -->
+</div>
+
+
+<div class="alert alert-warning" role="alert" ng-show="mensage">
+	<p>{{mensage}}</p>
+</div>
+
+<!-- Suggestion -->
+<div class="row block container" ng-show="isSuggestionVisible">
+	<div class="col-lg-8">
+  	<div class="form-group">
+      <label for="exampleFormControlTextarea1">A palavra <strong>{{searchWord}}</strong> não consta em nossa base, poderia nos ajudar fornecendo um breve constexto da mesma:</label>
+      <textarea placeholder="Forneça um contexto da palavra" ng-model="suggestionText" class="form-control" rows="5"></textarea>
+      <br>
+      <button ng-click="sendSuggestion()" class="btn btn-primary" type="button">Enviar</button>
+      <button ng-click="cancelSuggestion()" class="btn btn-warning" type="button">Cancelar</button>
+    </div>
+	</div><!-- /.col-lg-8 -->
+</div><!-- /.row -->
+
+<!-- Documents -->
+<div class="row block" ng-show="documents.length">
+	<div class="col-lg-8">
+    	Documentos:
+    	<ul ng-repeat="document in documents">
+    		<li><a href={{document.link}}>{{document.name}}</a></li>
+    	</ul>
+  	</div><!-- /.col-lg-8 -->
+</div><!-- /.row -->

@@ -9,9 +9,9 @@ angular.module('sparkword2vec', ['ngRoute', 'ngResource', 'ui.router', 'angular-
 					'': {
 						templateUrl: 'partials/header.html'
 					},
-					'documents@index': {
-						templateUrl: 'partials/documents.html',
-						controller: 'Documents'
+					'search@index': {
+						templateUrl: 'partials/search.html',
+						controller: 'Word2Vec'
 					},
 					'cloudWords@index': {
 						templateUrl: 'partials/cloudWords.html',

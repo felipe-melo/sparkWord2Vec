@@ -13,5 +13,6 @@ dependencyOverrides ++= Seq(
 libraryDependencies ++= Seq(
     "com.databricks" % "spark-xml_2.11" % "0.4.1",
     "org.apache.spark" %% "spark-core" % "2.3.1",
-    "org.apache.spark" %% "spark-sql"  % "2.3.1"
+    "org.apache.spark" %% "spark-sql"  % "2.3.1",
+    "org.apache.spark" %% "spark-mllib" % "2.0.1"
 )

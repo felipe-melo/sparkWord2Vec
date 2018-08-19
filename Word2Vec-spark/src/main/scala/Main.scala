@@ -1,6 +1,5 @@
 package main.scala
 
-//import org.apache.spark.implicits._
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd._
@@ -12,17 +11,17 @@ import org.apache.spark.sql.functions.{explode, col}
 
 object Main {
     def main(args: Array[String]) {
-        if (args.length < 1) {
-            System.err.println("directory not pass")
+        if (args.length < 2) {
+            System.err.println("folder and model name are required")
             System.exit(1)
         }
-        val dir = args(0)
+        val modelPath = args(0)
+        val modelName = args(1)
         val conf = new SparkConf()
             .setAppName("Word2Vec")
         val sc = new SparkContext(conf)
         
-        val modelPath = "/home/rodolpho/Downloads/models/word2vec"
-        val trainer = new Word2VecTrainer(sc, modelPath)
+        val trainer = new Word2VecTrainer(sc, modelPath, modelName)
 
         var syms = trainer.getSynonymsByWord("mac", 5)
         syms.foreach(println)

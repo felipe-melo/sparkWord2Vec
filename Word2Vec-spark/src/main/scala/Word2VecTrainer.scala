@@ -27,7 +27,7 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
         }
 
         if (isModelExists) {
-            return Word2VecModel.load(sc, modelPath);
+            return Word2VecModel.load(sc, modelPath)
         } else {
             val reader = new XMLReader(sc, workPath, inputName)
             var input = sc.parallelize(reader.read(tag, attr))

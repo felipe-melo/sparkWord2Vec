@@ -1,8 +1,19 @@
+var request = require('request');
+
 module.exports = () => {
 	const controller = {};
 	
 	controller.searchWord = (req, res) => {
-		if (req.body.searchWord === 'teste1') {
+		request.post(`http://localhost:8001/synonyms?word=${req.body.searchWord}`, {},
+		    (error, response, body) => {
+		        if (!error && response.statusCode == 200) {
+		            console.log(body);
+		        } else {
+		        	console.log(error);
+		        }
+		    }
+		);
+		/*if (req.body.searchWord === 'teste1') {
 			res.json({
 				questions: [
 					{
@@ -25,7 +36,7 @@ module.exports = () => {
 			});
 		} else {
 			res.json({questions: []});
-		}
+		}*/
 	};
 
 	controller.suggestion = (req, res) => {

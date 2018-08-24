@@ -14,24 +14,22 @@ object WebServer {
     def main(args: Array[String]) {
         val trainer = loadModel()
 
-        implicit val system = ActorSystem("my-system")
+        implicit val system = ActorSystem("word2vec")
         implicit val materializer = ActorMaterializer()
         // needed for the future flatMap/onComplete in the end
         implicit val executionContext = system.dispatcher
 
-        val syms = trainer.getSynonymsByWord("mac")
-        syms.foreach(println)
-
         val route =
-            path("hello") {
-                get {
-                    complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
+            (path("synonyms") & parameter("word")) { word =>
+                post {
+                    val syms = trainer.getSynonymsByWord(word)
+                    complete(HttpEntity(ContentTypes.`application/json`, syms))
                 }
             }
 
         val bindingFuture = Http().bindAndHandle(route, "localhost", 8001)
 
-        println(s"Server online at http://localhost:8001/hello\nPress RETURN to stop...")
+        println(s"Server online at http://localhost:8001\nPress RETURN to stop...")
         StdIn.readLine() // let it run until user presses return
         bindingFuture
             .flatMap(_.unbind()) // trigger unbinding from the port

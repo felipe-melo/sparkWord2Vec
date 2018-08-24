@@ -5,7 +5,6 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.rdd._
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{SQLContext, Row}
-import com.databricks.spark.xml
 import org.apache.spark.sql.types.{StructType, StructField, StringType, DoubleType, IntegerType};
 import org.apache.spark.sql.functions.{explode, col}
 
@@ -23,7 +22,10 @@ object Main {
         
         val trainer = new Word2VecTrainer(sc, modelPath, modelName)
 
-        var syms = trainer.getSynonymsByWord("mac", 5)
-        syms.foreach(println)
+        if (args.length > 2) {
+            val word = args(2)
+            var syms = trainer.getSynonymsByWord(word, 5)
+            syms.foreach(println)
+        }
     }
 }

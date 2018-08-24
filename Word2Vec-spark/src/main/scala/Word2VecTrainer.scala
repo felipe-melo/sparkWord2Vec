@@ -27,7 +27,7 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
         }
 
         if (isModelExists) {
-            return Word2VecModel.load(sc, modelPath);
+            return Word2VecModel.load(sc, modelPath)
         } else {
             val reader = new XMLReader(sc, workPath, inputName)
             var input = sc.parallelize(reader.read(tag, attr))
@@ -37,7 +37,9 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
         }
     }
 
-    def getSynonymsByWord(word: String, n: Int = 10): Array[String] = {
-        model.findSynonyms(word, n).map(vec => (vec._1));
+    def getSynonymsByWord(word: String, n: Int = 10): String = {
+        val words = model.findSynonyms(word, n).map(vec => "\""+vec._1+"\"")
+        val synonyms = "{\"words\":[" + words.mkString(",") + "]}"
+        return synonyms
     }
 }

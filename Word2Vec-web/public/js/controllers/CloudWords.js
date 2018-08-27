@@ -1,10 +1,9 @@
 angular.module('sparkword2vec').controller('CloudWords',
-	function($scope, $window, $timeout) {
+	function(Word2VecService, $scope, $window, $timeout) {
 		let originWords = [];
   	const maxWordCount = 1000;
-  	$scope.content = 'If you prefer to not use the automatic generator, push a branch named gh-pages to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator GitHub username to generate a link to their profile';
   	$scope.customColor;
-  	$scope.generateWords = generateWords;
+  	Word2VecService.reload = generateWords;
   	$scope.padding = 8;
   	$scope.editPadding = 8;
   	$scope.useTooltip = false;
@@ -18,26 +17,32 @@ angular.module('sparkword2vec').controller('CloudWords',
      * generate words base on some content by split(/\s+/g) and sort descending
      */
    	function generateWords() {
-    	originWords = $scope.content.split(/\s+/g);
-     	originWords = originWords.map(function(word) {
+    	originWords = Word2VecService.words.map(function(word) {
           return {
-             	text: word,
-             	count: Math.floor(Math.random() * maxWordCount)
+            text: word.text,
+            count: word.value //Math.floor(Math.random() * maxWordCount)
           };
      	}).sort(function(a, b) {
-        	return b.count - a.count;
+        return b.count - a.count;
      	});
-     	resizeWordsCloud();
+      if(originWords.length) {
+        console.log(originWords);
+     	  resizeWordsCloud();
+      } else {
+        $scope.words = [];
+      }
   	}
     /**
     * adjust words size base on width
     */
   	function resizeWordsCloud() {
     	$timeout(function() {
+        if (!originWords.length)
+          return;
         const element = document.getElementById('wordsCloud');
         const height = $window.innerHeight * 0.75;
         element.style.height = height + 'px';
-        const width = element.getBoundingClientRect().width;
+        const width = element.getBoundingClientRect().width || 840;
         const maxCount = originWords[0].count;
         const minCount = originWords[originWords.length - 1].count;
         const maxWordSize = width * 0.15;

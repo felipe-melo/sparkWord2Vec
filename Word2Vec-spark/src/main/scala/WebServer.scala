@@ -21,7 +21,7 @@ object WebServer {
 
         val route =
             (path("synonyms") & parameter("word")) { word =>
-                post {
+                get {
                     val syms = trainer.getSynonymsByWord(word)
                     complete(HttpEntity(ContentTypes.`application/json`, syms))
                 }

@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-lg-8 container">
 		<div class="input-group">
-			<input type="text" ng-model="searchWord" class="form-control" aria-label="..." placeholder="Search for a word or combinarion like: movie + popcorn">
+			<input type="text" ng-model="searchWord" class="form-control" aria-label="..." placeholder="Search for a word or combinarion like: movie + popcorn" ng-change="onSearchChange()">
 		  	<span class="input-group-btn">
 	        	<button ng-click="search()" class="btn btn-default" type="button">Go!</button>
 	      	</span>
@@ -28,11 +28,11 @@
 </div><!-- /.row -->
 
 <!-- Documents -->
-<div class="row block" ng-show="documents.length">
+<div class="row block" ng-show="posts.length">
 	<div class="col-lg-8">
-    	Documentos:
-    	<ul ng-repeat="document in documents">
-    		<li><a href={{document.link}}>{{document.name}}</a></li>
+    	Posts do stackoverflow:
+    	<ul ng-repeat="post in posts">
+    		<li><a href={{post.link}}>{{post.title}}</a></li>
     	</ul>
   	</div><!-- /.col-lg-8 -->
 </div><!-- /.row -->

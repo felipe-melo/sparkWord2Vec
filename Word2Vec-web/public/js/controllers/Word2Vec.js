@@ -8,7 +8,7 @@ angular.module('sparkword2vec').controller('Word2Vec',
 
 		$scope.search = () => {
 			if ($scope.searchWord) {
-				$http.post('/search_word', {searchWord: $scope.searchWord})
+				$http.post('/search_word', {searchWord: convertSearch($scope.searchWord)})
 					.then((response) => {
 						if (response.data.posts.length) {
 							$scope.posts = response.data.posts;
@@ -22,11 +22,26 @@ angular.module('sparkword2vec').controller('Word2Vec',
 					})
 					.catch((error) => {
 						$scope.mensage = error.mensage;
-					});
+					}); 
 			} else {
 				$scope.mensage = 'digite alguma palavra chave';
 			}
 		}
+
+		const convertSearch = (searchField) => {
+			let aux = '';
+
+			if (searchField.includes('-')) {
+				searchField.split('-').forEach(subset => {
+					aux += subset.trim().split(' ').join('_') + '-';
+				});
+				aux = aux.substring(0, aux.length-1);
+			} else {
+				aux = searchField.split(' ').join('_');
+			}
+			console.log(aux);
+			return aux;
+		};
 
 		$scope.sendSuggestion = () => {
 			const suggestionText = $scope.suggestionText.trim();

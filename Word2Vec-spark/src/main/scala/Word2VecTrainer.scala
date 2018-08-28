@@ -38,8 +38,16 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
     }
 
     def getSynonymsByWord(word: String, n: Int = 10): String = {
-        val words = model.findSynonyms(word, n).map(vec => "\""+vec._1+"\"")
-        val synonyms = "{\"words\":[" + words.mkString(",") + "]}"
-        return synonyms
+        try {
+            val words = model.findSynonyms(word, n).map(vec => 
+                "{\"text\": \""+vec._1+"\", \"value\":"+vec._2+"}"
+            )
+            val synonyms = "{\"words\":[" + words.mkString(",") + "]}"
+            return synonyms
+        } catch {
+            case ex: Exception => {
+                return "{}"
+            }
+        }
     }
 }

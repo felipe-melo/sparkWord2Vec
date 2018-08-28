@@ -1,20 +1,24 @@
 angular.module('sparkword2vec').controller('Word2Vec',
-	function($scope, $http) {
+	function($scope, $http, Word2VecService) {
 		$scope.searchWord = '';
 		$scope.suggestionText = '';
 		$scope.isSuggestionVisible = false;
-		$scope.documents = [];
+		$scope.posts = [];
 		$scope.mensage = '';
 
 		$scope.search = () => {
 			if ($scope.searchWord) {
 				$http.post('/search_word', {searchWord: $scope.searchWord})
 					.then((response) => {
-						if (response.data.questions.length) {
-							$scope.documents = response.data.questions;
+						if (response.data.posts.length) {
+							$scope.posts = response.data.posts;
+							Word2VecService.words = response.data.words;
 						} else {
+							$scope.posts = [];
+							Word2VecService.words = []
 							$scope.isSuggestionVisible = true;
 						}
+						Word2VecService.reload();
 					})
 					.catch((error) => {
 						$scope.mensage = error.mensage;
@@ -43,6 +47,11 @@ angular.module('sparkword2vec').controller('Word2Vec',
 		}
 
 		$scope.cancelSuggestion = () => {
+			$scope.isSuggestionVisible = false;
+			$scope.mensage = '';
+		}
+
+		$scope.onSearchChange = (value) => {
 			$scope.isSuggestionVisible = false;
 			$scope.mensage = '';
 		}

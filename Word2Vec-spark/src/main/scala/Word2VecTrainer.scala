@@ -6,6 +6,7 @@ import org.apache.spark.SparkContext._
 import java.nio.file.{ Files, FileSystems }
 import org.apache.hadoop.fs.{Path, FileSystem};
 import org.apache.spark.mllib.feature.{Word2Vec, Word2VecModel}
+import org.apache.spark.mllib.linalg.{Vector => Vec, Vectors}
 
 class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName: String) {
     private val word2vec = new Word2Vec();
@@ -37,9 +38,10 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
         }
     }
 
-    def getSynonymsByWord(word: String, n: Int = 10): String = {
+    def getSynonymsByWord(searchQuery: String, n: Int = 10): String = {
         try {
-            val words = model.findSynonyms(word, n).map(vec => 
+            val qry = separateWords(searchQuery, model)
+            val words = model.findSynonyms(qry, n).map(vec => 
                 "{\"text\": \""+vec._1+"\", \"value\":"+vec._2+"}"
             )
             val synonyms = "{\"words\":[" + words.mkString(",") + "]}"
@@ -49,5 +51,45 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
                 return "{}"
             }
         }
+    }
+
+    def separateWords(words: String, model: Word2VecModel): Vec = {
+        if (!words.contains("-") && !words.contains("_")) {
+            //return model.transform("u'"+words+"''");
+            return model.transform(words);
+        }
+        if (words.contains("-")) {
+            val aux = words.split("-")
+            var sum = separateWords(aux(0), model)
+            (1 to aux.size - 1).foreach(i => {
+                sum = sub(sum, separateWords(aux(i), model))
+            })
+            return sum
+        } else {
+            val aux = words.split("_")
+            var sum = separateWords(aux(0), model)
+            (1 to aux.size-1).foreach(i => {
+                sum = add(sum, separateWords(aux(i), model))
+            })
+            return sum
+        }
+    }
+
+    def add(vec1: Vec, vec2: Vec): Vec = {
+        var i = 0
+        val aux = (0 to vec1.size-1).map(i => vec1(i) + vec2(i)).toArray
+        return Vectors.dense(aux)
+    }
+
+    def sub(vec1: Vec, vec2: Vec): Vec = {
+        var i = 0
+        val aux = (0 to vec1.size-1).map(i => vec1(i) - vec2(i)).toArray
+        return Vectors.dense(aux)
+    }
+
+    def mul(vec1: Vec, scalar: Int): Vec = {
+        var i = 0
+        val aux = (0 to vec1.size-1).map(i => vec1(i) * scalar).toArray
+        return Vectors.dense(aux)
     }
 }

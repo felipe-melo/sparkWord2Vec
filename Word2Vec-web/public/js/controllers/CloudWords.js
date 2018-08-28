@@ -26,7 +26,6 @@ angular.module('sparkword2vec').controller('CloudWords',
         return b.count - a.count;
      	});
       if(originWords.length) {
-        console.log(originWords);
      	  resizeWordsCloud();
       } else {
         $scope.words = [];

@@ -9,7 +9,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
-import java.io.{File, FileInputStream, InputStream};
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.{File, FileWriter, FileInputStream, InputStream};
 import java.net.URI;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -58,5 +62,43 @@ class XMLReader(val sc: SparkContext, val workPath: String, val file: String) {
             rows(i) = cleanedText;
         }
         rows
+    }
+}
+
+class XMLWriter(val sc: SparkContext, val workPath: String, val file: String) {
+    val path = workPath + file;
+    //val fXmlFile = new File(path);
+
+    var fXmlFile: InputStream = null
+
+    if (workPath.contains("hdfs")) {
+        val fs = FileSystem.get(URI.create(workPath + file), new Configuration())
+        fXmlFile = fs.open(new Path(path))
+    } else {
+        println(path)
+        fXmlFile = new FileInputStream(new File(path))
+    }
+
+    val dbFactory = DocumentBuilderFactory.newInstance();
+    val dBuilder = dbFactory.newDocumentBuilder();
+    val doc = dBuilder.parse(fXmlFile);
+
+    doc.getDocumentElement().normalize();    
+
+    def write (tagName: String, value: String) = {
+        val root = doc.getDocumentElement()
+        val suggestions = root.asInstanceOf[Element]
+
+        val newSuggestion = doc.createElement("suggestion")
+        newSuggestion.setAttribute("Text", value)
+
+        suggestions.appendChild(newSuggestion)
+
+        val transformerFactory = TransformerFactory.newInstance()
+        val transformer = transformerFactory.newTransformer()
+        val source = new DOMSource(doc)
+
+        val result = new StreamResult(path)
+        transformer.transform(source, result)
     }
 }

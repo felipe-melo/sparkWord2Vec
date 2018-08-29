@@ -11,7 +11,14 @@ import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 
 object WebServer {
+    val conf = new SparkConf()
+        .setAppName("Word2Vec")
+        .setMaster("local[1]")
+        .set("spark.executor.memory", "1g");
+    val sc = new SparkContext(conf)
+
     def main(args: Array[String]) {
+
         val trainer = loadModel()
 
         implicit val system = ActorSystem("word2vec")
@@ -19,15 +26,26 @@ object WebServer {
         // needed for the future flatMap/onComplete in the end
         implicit val executionContext = system.dispatcher
 
-        val route =
-            (path("synonyms") & parameter("word")) { word =>
-                get {
-                    val syms = trainer.getSynonymsByWord(word)
-                    complete(HttpEntity(ContentTypes.`application/json`, syms))
-                }
+        val routeSynonyms = (path("synonyms") & parameter("word")) { word => 
+            get {
+                val syms = trainer.getSynonymsByWord(word)
+                complete(HttpEntity(ContentTypes.`application/json`, syms))
             }
+        }
 
-        val bindingFuture = Http().bindAndHandle(route, "localhost", 8001)
+        val routeSuggestion = (path("suggestion") & parameter("suggestionText")) { 
+            suggestionText => {
+                post {
+                    writeSuggestion(suggestionText)
+                    complete("Sugestão salva com sucesso!")
+                }
+            }            
+        }
+
+        val routes = routeSynonyms ~ routeSuggestion
+
+        //val bindingFuture = Http().bindAndHandle(route, "localhost", 8001)
+        val bindingFuture = Http().bindAndHandle(routes, "localhost", 8001)
 
         println(s"Server online at http://localhost:8001\nPress RETURN to stop...")
         StdIn.readLine() // let it run until user presses return
@@ -37,15 +55,16 @@ object WebServer {
     }
 
     def loadModel(): Word2VecTrainer = {
-        val conf = new SparkConf()
-            .setAppName("Word2Vec")
-            .setMaster("local[1]")
-            .set("spark.executor.memory", "1g");
-        val sc = new SparkContext(conf)
-
-        val modelPath = "/home/cooper/Desenvolvimento/ufrj/Word2Vec/datasets/"
+        val modelPath = "/home/rodolpho/Desenvolvimento/ufrj/Word2Vec/datasets/"
         val modelName = "stackoverflowModel"
 
         return new Word2VecTrainer(sc, modelPath, modelName)
+    }
+
+    def writeSuggestion(suggestionText: String) = {
+        val workPath = "/home/rodolpho/Desenvolvimento/ufrj/Word2Vec/datasets/"
+        val inputFile = "suggestions.xml"
+        val writer = new XMLWriter(sc, workPath, inputFile)
+        writer.write("suggestion", suggestionText)
     }
 }

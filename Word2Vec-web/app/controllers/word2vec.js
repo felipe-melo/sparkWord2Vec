@@ -47,8 +47,18 @@ module.exports = () => {
 	};
 
 	controller.suggestion = (req, res) => {
-		console.log(req.body);
-		res.status(200).end();
+		//console.log(req.body);
+		//res.status(200).end();
+		axios.post(`http://localhost:8001/suggestion?suggestionText=${req.body.suggestionText}`)
+			.then((response) => {
+				//console.log(response.data)
+				res.json({"mensagem":response.data})
+				//$window.alert("Sugestão recebida com sucesso!");
+
+			})
+			.catch((error) => {
+				console.log('Error', error)
+			});
 	};
 
 	return controller;

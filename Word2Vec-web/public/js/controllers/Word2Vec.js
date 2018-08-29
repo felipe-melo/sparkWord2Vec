@@ -1,5 +1,5 @@
 angular.module('sparkword2vec').controller('Word2Vec',
-	function($scope, $http, Word2VecService) {
+	function($scope, $window, $http, Word2VecService) {
 		$scope.searchWord = '';
 		$scope.suggestionText = '';
 		$scope.isSuggestionVisible = false;
@@ -54,6 +54,7 @@ angular.module('sparkword2vec').controller('Word2Vec',
 				$http.post('/suggestion', {suggestionText: $scope.suggestionText})
 					.then((response) => {
 						$scope.isSuggestionVisible = false;
+						$window.alert("Sugestão recebida com sucesso!");
 					})
 					.catch((error) => {
 						$scope.isSuggestionVisible = false;

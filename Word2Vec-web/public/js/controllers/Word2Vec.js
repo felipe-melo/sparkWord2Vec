@@ -49,12 +49,15 @@ angular.module('sparkword2vec').controller('Word2Vec',
 				$scope.mensage = `digite um contexto para a palavra ${$scope.searchWord}.`;
 			} else if (!$scope.suggestionText.includes($scope.searchWord)) {
 				$scope.mensage = `O contexto deve incluir a palavra ${$scope.searchWord}.`;
+			} else if (($scope.suggestionText.split($scope.searchWord).length -1 < 5)) {
+				$scope.mensage = `O contexto deve incluir a palavra ${$scope.searchWord} pelo menos 5 vezes.`;
 			} else{
 				$scope.mensage = '';
 				$http.post('/suggestion', {suggestionText: $scope.suggestionText})
 					.then((response) => {
 						$scope.isSuggestionVisible = false;
-						$window.alert("Sugestão recebida com sucesso!");
+						$scope.suggestionText = "";
+						alert("Sugestão recebida com sucesso!");
 					})
 					.catch((error) => {
 						$scope.isSuggestionVisible = false;

@@ -6,15 +6,15 @@ module.exports = () => {
 	const searchStackoverflow = async (res, words) => {
 		let arr = [];
 
-		words.forEach (word => {
+		/*words.forEach (word => {
 			arr.push(axios.get(`https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=relevance&q=${word.text}&site=pt.stackoverflow&filter=!9Z(-wu0BT`));
-		});
+		});*/
 
-		//let results = [{data: {items: [{title: 'who cares', link: 'https://fuckyou.com'}]}}]
-		let results = await axios.all(arr)
+		let results = [{data: {items: [{title: 'who cares', link: 'https://fuckyou.com'}]}}]
+		/*let results = await axios.all(arr)
 			.catch((err) => {
 				console.log('Error', err);
-			});
+			});*/
 
 		if (results.length) {
 			const posts = []
@@ -34,7 +34,7 @@ module.exports = () => {
 	};
 	
 	controller.searchWord = (req, res) => {
-		axios.get(`http://localhost:8001/synonyms?word=${req.body.searchWord}`)
+		axios.get(`http://localhost:8001/synonyms?word=${encodeURIComponent(req.body.searchWord)}`)
 			.then((response) => {
 				if (response.data.words)
 					searchStackoverflow(res, response.data.words);
@@ -47,17 +47,12 @@ module.exports = () => {
 	};
 
 	controller.suggestion = (req, res) => {
-		//console.log(req.body);
-		//res.status(200).end();
-		axios.post(`http://localhost:8001/suggestion?suggestionText=${req.body.suggestionText}`)
+		axios.post(`http://localhost:8001/suggestion?suggestionText=${encodeURIComponent(req.body.suggestionText)}`)
 			.then((response) => {
-				//console.log(response.data)
-				res.json({"mensagem":response.data})
-				//$window.alert("Sugestão recebida com sucesso!");
-
+				res.json({"mensagem": response.data})
 			})
 			.catch((error) => {
-				console.log('Error', error)
+				console.log('Error - spark', error)
 			});
 	};
 

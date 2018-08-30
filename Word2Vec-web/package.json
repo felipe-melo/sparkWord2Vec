@@ -1,0 +1,20 @@
+{
+  "name": "sparkWord2VecBackend",
+  "version": "0.0.1",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server"
+  },
+  "repository": "git@ufrj.git:felipe-melo/sparkWord2Vec.git",
+  "author": "Felipe Melo <felipe.melo.devel@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "express-load": "^1.1.16",
+    "method-override": "^3.0.0"
+  }
+}

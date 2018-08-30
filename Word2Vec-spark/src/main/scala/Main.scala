@@ -21,11 +21,5 @@ object Main {
         val sc = new SparkContext(conf)
         
         val trainer = new Word2VecTrainer(sc, modelPath, modelName)
-
-        if (args.length > 2) {
-            val word = args(2)
-            var syms = trainer.getSynonymsByWord(word, 5)
-            syms.foreach(println)
-        }
     }
 }

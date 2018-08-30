@@ -31,7 +31,6 @@ class XMLReader(val sc: SparkContext, val workPath: String, val file: String) {
         val fs = FileSystem.get(URI.create(workPath + file), new Configuration())
         fXmlFile = fs.open(new Path(path))
     } else {
-        println(path)
         fXmlFile = new FileInputStream(new File(path))
     }
 

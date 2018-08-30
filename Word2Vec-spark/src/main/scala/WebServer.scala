@@ -19,7 +19,7 @@ object WebServer {
 
     def main(args: Array[String]) {
 
-        val trainer = loadModel()
+        val trainer = loadModel(args(0))
 
         implicit val system = ActorSystem("word2vec")
         implicit val materializer = ActorMaterializer()
@@ -36,7 +36,7 @@ object WebServer {
         val routeSuggestion = (path("suggestion") & parameter("suggestionText")) { 
             suggestionText => {
                 post {
-                    writeSuggestion(suggestionText)
+                    writeSuggestion(args(0), suggestionText)
                     complete("Sugestão salva com sucesso!")
                 }
             }            
@@ -54,15 +54,15 @@ object WebServer {
             .onComplete(_ => system.terminate()) // and shutdown when done
     }
 
-    def loadModel(): Word2VecTrainer = {
-        val modelPath = "/home/rodolpho/Desenvolvimento/ufrj/Word2Vec/datasets/"
+    def loadModel(path: String): Word2VecTrainer = {
+        val modelPath = path
         val modelName = "stackoverflowModel"
 
         return new Word2VecTrainer(sc, modelPath, modelName)
     }
 
-    def writeSuggestion(suggestionText: String) = {
-        val workPath = "/home/rodolpho/Desenvolvimento/ufrj/Word2Vec/datasets/"
+    def writeSuggestion(path: String, suggestionText: String) = {
+        val workPath = path
         val inputFile = "suggestions.xml"
         val writer = new XMLWriter(sc, workPath, inputFile)
         writer.write("suggestion", suggestionText)

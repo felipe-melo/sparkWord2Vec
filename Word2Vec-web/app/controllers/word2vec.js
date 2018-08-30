@@ -6,15 +6,15 @@ module.exports = () => {
 	const searchStackoverflow = async (res, words) => {
 		let arr = [];
 
-		/*words.forEach (word => {
+		words.forEach (word => {
 			arr.push(axios.get(`https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=relevance&q=${word.text}&site=pt.stackoverflow&filter=!9Z(-wu0BT`));
-		});*/
+		});
 
-		let results = [{data: {items: [{title: 'who cares', link: 'https://fuckyou.com'}]}}]
-		/*let results = await axios.all(arr)
+		//let results = [{data: {items: [{title: 'teste', link: 'https://google.com'}]}}]
+		let results = await axios.all(arr)
 			.catch((err) => {
 				console.log('Error', err);
-			});*/
+			});
 
 		if (results.length) {
 			const posts = []

@@ -14,7 +14,7 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
     private val model = this.load("row", "Text");
 
     private def load(tag: String, attr: String): Word2VecModel = {
-        var inputName = "Comments.xml"
+        var inputName = "Aux.xml"
         var isModelExists = false
         if (modelPath.contains("hdfs")) {
             val conf = sc.hadoopConfiguration
@@ -32,22 +32,27 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
         } else {
             val reader = new XMLReader(sc, workPath, inputName)
             var input = sc.parallelize(reader.read(tag, attr))
-            var model = word2vec.fit(input)
+
+            val reader_sugg = new XMLReader(sc, workPath, "suggestions.xml")
+            var input_sugg = sc.parallelize(reader_sugg.read("suggestion", attr))
+
+            var model = word2vec.fit(input ++ input_sugg)
             model.save(sc, modelPath)
             return model
         }
     }
 
-    def getSynonymsByWord(searchQuery: String, n: Int = 10): String = {
+    def getSynonymsByWord(searchQuery: String, n: Int = 15): String = {
         try {
             val qry = separateWords(searchQuery, model)
-            val words = model.findSynonyms(qry, n).map(vec => 
+            val words = model.findSynonyms(qry, n).filter(aux => !searchQuery.contains(aux._1)).map(vec => 
                 "{\"text\": \""+vec._1+"\", \"value\":"+vec._2+"}"
             )
             val synonyms = "{\"words\":[" + words.mkString(",") + "]}"
             return synonyms
         } catch {
             case ex: Exception => {
+                println(ex)
                 return "{}"
             }
         }
@@ -56,7 +61,7 @@ class Word2VecTrainer(val sc: SparkContext, val workPath: String, val modelName:
     def separateWords(words: String, model: Word2VecModel): Vec = {
         if (!words.contains("-") && !words.contains("_")) {
             //return model.transform("u'"+words+"''");
-            return model.transform(words);
+            return model.transform(words)
         }
         if (words.contains("-")) {
             val aux = words.split("-")
